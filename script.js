@@ -57,6 +57,9 @@ async function fetchDataAndCheck() {
   try {
     // Fetch the data from the URL
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const text = await response.text();
 
     // Extract JSONP callback content
