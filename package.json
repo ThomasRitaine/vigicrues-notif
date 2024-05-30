@@ -2,6 +2,7 @@
   "name": "vigicrues-notif",
   "version": "1.0.0",
   "description": "A simple JavaScript app to monitor the flooding of a river and send push notification",
+  "type": "module",
   "main": "script.js",
   "scripts": {
     "dev": "nodemon script.js",
