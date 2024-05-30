@@ -82,6 +82,9 @@ async function fetchDataAndCheck() {
         isFloodActive = true;
       }
     } else {
+      console.log(
+        `${new Date().toISOString()} - Current value: ${latestValue} m³/s is below the threshold.`
+      );
       if (isFloodActive) {
         await sendNotification(
           `VigiCrues [NORMAL]: Débit ${latestValue} m³/s`,
