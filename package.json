@@ -1,0 +1,27 @@
+{
+  "name": "vigicrues-notif",
+  "version": "1.0.0",
+  "description": "A simple JavaScript app to monitor the flooding of a river and send push notification",
+  "main": "script.js",
+  "scripts": {
+    "dev": "nodemon script.js",
+    "prod": "node script.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThomasRitaine/vigicrues-notif.git"
+  },
+  "author": "Thomas Ritaine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThomasRitaine/vigicrues-notif/issues"
+  },
+  "homepage": "https://github.com/ThomasRitaine/vigicrues-notif#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.13"
+  }
+}
