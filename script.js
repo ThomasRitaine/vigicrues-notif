@@ -1,16 +1,17 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 // Read environment variables
 const threshold = parseFloat(process.env.THRESHOLD);
 const checkInterval = parseInt(process.env.CHECK_INTERVAL, 10) * 60 * 1000; // Convert minutes to milliseconds
-const pushoverEmails = process.env.PUSHOVER_EMAILS.split(',');
+const pushoverEmails = process.env.PUSHOVER_EMAILS.split(",");
 const smtpHost = process.env.SMTP_HOST;
 const smtpPort = parseInt(process.env.SMTP_PORT, 10);
 const smtpUser = process.env.SMTP_USER;
 const smtpPass = process.env.SMTP_PASS;
 
 // URL for fetching the JSONP data
-const url = 'https://www.vigicrues.gouv.fr/services/observations.json/index.php?CdStationHydro=X300101001&GrdSerie=Q&FormatSortie=simple&callback=jQuery112008376741977901722_1717013615775&_=1717013615777';
+const url =
+  "https://www.vigicrues.gouv.fr/services/observations.json/index.php?CdStationHydro=X300101001&GrdSerie=Q&FormatSortie=simple&callback=jQuery112008376741977901722_1717013615775&_=1717013615777";
 
 // Create a reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
@@ -19,8 +20,8 @@ const transporter = nodemailer.createTransport({
   secure: true, // Use SSL/TLS
   auth: {
     user: smtpUser,
-    pass: smtpPass
-  }
+    pass: smtpPass,
+  },
 });
 
 let lastAlertTime = 0;
@@ -37,15 +38,15 @@ async function sendNotification(subject, message) {
     from: smtpUser,
     to: pushoverEmails,
     subject: subject,
-    text: message
+    text: message,
   };
 
   try {
     // Send the email
     await transporter.sendMail(mailOptions);
-    console.log('Notification email sent!');
+    console.log("Notification email sent!");
   } catch (error) {
-    console.error('Error sending notification email:', error);
+    console.error("Error sending notification email:", error);
   }
 }
 
@@ -64,19 +65,23 @@ async function fetchDataAndCheck() {
 
     // Extract JSONP callback content
     const jsonpCallbackName = text.match(/^(.*?)(?=\()/)[0];
-    const jsonpData = text.substring(jsonpCallbackName.length + 1, text.length - 1);
+    const jsonpData = text.substring(
+      jsonpCallbackName.length + 1,
+      text.length - 1
+    );
 
     // Parse JSONP data
     const jsonData = JSON.parse(jsonpData);
 
     // Extract the latest value from the parsed JSON
-    const latestValue = jsonData.Serie.ObssHydro[jsonData.Serie.ObssHydro.length - 1][1];
+    const latestValue =
+      jsonData.Serie.ObssHydro[jsonData.Serie.ObssHydro.length - 1][1];
 
     const now = Date.now();
     const floodAlertInterval = 60 * 60 * 1000; // 1 hour
 
     if (latestValue > threshold) {
-      if (!isFloodActive || (now - lastAlertTime) > floodAlertInterval) {
+      if (!isFloodActive || now - lastAlertTime > floodAlertInterval) {
         await sendNotification(
           `VigiCrues [CRUE]: Débit ${latestValue} m³/s`,
           `Le débit a dépassé ${threshold} m³/s. Restez prudent.`
@@ -97,7 +102,10 @@ async function fetchDataAndCheck() {
       }
     }
   } catch (error) {
-    console.error('Error fetching and parsing JSONP:', error);
+    console.error(
+      "Error fetching and parsing JSONP or sending notifications:",
+      error
+    );
   }
 
   // Schedule the next check
@@ -106,4 +114,3 @@ async function fetchDataAndCheck() {
 
 // Initial call to start the periodic check
 fetchDataAndCheck();
-
