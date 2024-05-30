@@ -1,0 +1,11 @@
+services:
+  app:
+    image: node:20
+    volumes:
+      - .:/usr/src/app
+    working_dir: /user/src/app
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env
